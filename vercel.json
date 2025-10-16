@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "env": {
+    "POSTGRES_URL": "@postgres_url"
+  },
+  "crons": [
+    {
+      "path": "/api/cron/check-dms",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/auto-post",
+      "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/fetch-content",
+      "schedule": "0 */12 * * *"
+    }
+  ]
+}
