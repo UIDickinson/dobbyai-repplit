@@ -3,6 +3,8 @@ import path from 'path';
 import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import cron from 'node-cron';
+import fetch from 'node-fetch'; // or use global fetch if available
 
 dotenv.config();
 
@@ -53,6 +55,16 @@ app.all('/api/*', async (req, res) => {
   } catch (err) {
     console.error('Local server error:', err);
     return res.status(500).json({ error: 'Internal server error', message: err.message });
+  }
+});
+
+// run the existing API cron route every 5 minutes locally
+cron.schedule('*/5 * * * *', async () => {
+  try {
+    console.log('[cron] running local cron/auto-post');
+    await fetch(`http://localhost:${PORT}/api/cron/auto-post`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ADMIN_API_KEY } });
+  } catch (err) {
+    console.error('[cron] error', err);
   }
 });
 
