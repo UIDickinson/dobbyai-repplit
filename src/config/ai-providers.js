@@ -80,7 +80,7 @@ export const anthropicConfig = {
 // Sentient AI (via Fireworks) configuration
 export const sentientConfig = {
   apiKeys: (process.env.SENTIENT_API_KEYS || '').split(',').filter(Boolean),
-  baseURL: process.env.SENTIENT_BASE_URL || 'https://api.fireworks.ai/inference/v1',
+  baseURL: process.env.SENTIENT_BASE_URL || 'https://api.fireworks.ai/inference/v1/completions',
   
   models: {
     default: 'accounts/sentientfoundation-serverless/models/dobby-mini-unhinged-plus-llama-3-1-8b',

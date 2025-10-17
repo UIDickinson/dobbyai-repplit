@@ -29,7 +29,7 @@ class AIManager {
     // Sentient AI uses OpenAI-compatible API via Fireworks
     this.sentientClients = this.sentientKeys.map(key => new OpenAI({
       apiKey: key,
-      baseURL: process.env.SENTIENT_BASE_URL || 'https://api.fireworks.ai/inference/v1'
+      baseURL: process.env.SENTIENT_BASE_URL || 'https://api.fireworks.ai/inference/v1/completions'
     }));
   }
 
