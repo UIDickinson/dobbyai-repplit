@@ -84,9 +84,9 @@ export const sentientConfig = {
   
   models: {
     default: 'accounts/sentientfoundation-serverless/models/dobby-mini-unhinged-plus-llama-3-1-8b',
-    chat: 'accounts/sentientfoundation/models/dobby-unhinged-llama-3-3-70b-new',
+    chat: 'accounts/sentientfoundation-serverless/models/dobby-mini-unhinged-plus-llama-3-1-8b',
     fast: 'accounts/sentientfoundation/models/dobby-unhinged-llama-3-3-70b-new',
-    creative: 'accounts/sentientfoundation-serverless/models/dobby-mini-unhinged-plus-llama-3-1-8b',
+    creative: 'accounts/sentientfoundation/models/dobby-unhinged-llama-3-3-70b-new',
   },
   
   parameters: {
