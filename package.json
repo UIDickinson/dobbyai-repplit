@@ -1,10 +1,13 @@
 {
   "name": "dobbyai",
   "version": "1.0.0",
+  "type": "module",
   "description": "Sentient Dobby AI Companion on Reddit",
   "main": "index.js",
   "scripts": {
     "dev": "vercel dev",
+    "start:local": "node local-server.js",
+    "dev:local": "nodemon --watch api --watch src --exec node local-server.js",
     "setup": "node scripts/setup-db.js",
     "test": "node scripts/test-connection.js",
     "test:blog": "node scripts/test-sentient-blog.js",
@@ -19,6 +22,7 @@
     "snoowrap": "^1.23.0",
     "openai": "^4.20.0",
     "@anthropic-ai/sdk": "^0.9.0",
+    "express": "^4.18.2",
     "axios": "^1.6.0",
     "dotenv": "^16.3.0",
     "bottleneck": "^2.19.5",
@@ -26,6 +30,7 @@
     "rss-parser": "^3.13.0"
   },
   "devDependencies": {
-    "vercel": "^32.0.0"
+    "vercel": "^32.0.0",
+    "nodemon": "^2.0.22"
   }
 }
