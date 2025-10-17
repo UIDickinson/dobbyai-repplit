@@ -7,26 +7,23 @@
     "dev": "vercel dev",
     "setup": "node scripts/setup-db.js",
     "test": "node scripts/test-connection.js",
-    "test:blog": "node scripts/test-sentient-blog.js"
+    "test:blog": "node scripts/test-sentient-blog.js",
+    "test:ai": "node scripts/test-ai-providers.js",
+    "test:all": "node scripts/test-all-functions.js"
   },
-  "keywords": [
-    "ai",
-    "reddit",
-    "bot",
-    "agent"
-  ],
-  "author": "Your Name",
+  "keywords": ["ai", "reddit", "bot", "agent"],
+  "author": "ui_anon",
   "license": "MIT",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.9.0",
     "@vercel/postgres": "^0.5.0",
+    "snoowrap": "^1.23.0",
+    "openai": "^4.20.0",
+    "@anthropic-ai/sdk": "^0.9.0",
     "axios": "^1.6.0",
+    "dotenv": "^16.3.0",
     "bottleneck": "^2.19.5",
     "cheerio": "^1.0.0-rc.12",
-    "dotenv": "^16.6.1",
-    "openai": "^4.20.0",
-    "rss-parser": "^3.13.0",
-    "snoowrap": "^1.23.0"
+    "rss-parser": "^3.13.0"
   },
   "devDependencies": {
     "vercel": "^32.0.0"
