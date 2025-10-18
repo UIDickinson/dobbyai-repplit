@@ -13,9 +13,7 @@ class ContentFetcher {
       }
     });
     
-    // Customizable blog selectors - adjust these based on your blog's HTML structure
     this.blogSelectors = {
-      // Article container (try these in order)
       containers: [
         'article',
         '.post',
@@ -25,8 +23,6 @@ class ContentFetcher {
         '[class*="post"]',
         '[class*="article"]'
       ],
-      
-      // Title selectors
       title: [
         'h1',
         'h2',
@@ -35,8 +31,6 @@ class ContentFetcher {
         '.entry-title',
         '[class*="title"]'
       ],
-      
-      // Link selectors
       link: [
         'a[href*="/blog/"]',
         'a[href*="/post/"]',
@@ -45,8 +39,6 @@ class ContentFetcher {
         'h1 a',
         'h2 a'
       ],
-      
-      // Content/excerpt selectors
       content: [
         '.excerpt',
         '.summary',
@@ -63,7 +55,6 @@ class ContentFetcher {
     const allContent = [];
 
     try {
-      // Fetch RSS feed if available
       if (process.env.SENTIENT_LABS_RSS_URL) {
         logger.info('Fetching from RSS feed...');
         const rssContent = await this.fetchRSSFeed();
@@ -73,7 +64,6 @@ class ContentFetcher {
         logger.info('No RSS feed configured, skipping RSS fetch');
       }
 
-      // Fetch blog posts if available
       if (process.env.SENTIENT_LABS_BLOG_URL) {
         logger.info('Fetching from blog...');
         const blogContent = await this.fetchBlogPosts();
@@ -83,17 +73,14 @@ class ContentFetcher {
         logger.info('No blog URL configured, skipping blog fetch');
       }
 
-      // Check if we got any content
       if (allContent.length === 0) {
         logger.warn('No content sources configured! Please set SENTIENT_LABS_RSS_URL or SENTIENT_LABS_BLOG_URL');
         return [];
       }
 
-      // Remove duplicates based on URL
       const uniqueContent = this.removeDuplicates(allContent);
       logger.info(`${uniqueContent.length} unique items after deduplication`);
 
-      // Save to database
       let savedCount = 0;
       for (const content of uniqueContent) {
         try {
@@ -135,103 +122,67 @@ class ContentFetcher {
     }
   }
 
-  async fetchBlogPosts() {
-    try {
-      const response = await axios.get(process.env.SENTIENT_LABS_BLOG_URL, {
-        timeout: 15000,
-        headers: {
-          'User-Agent': 'DobbyAI-ContentFetcher/1.0',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.5',
-        }
-      });
-
-      const $ = cheerio.load(response.data);
-      const posts = [];
-
-      // Try to find article containers
-      let $articles = $();
-      for (const selector of this.blogSelectors.containers) {
-        $articles = $(selector);
-        if ($articles.length > 0) {
-          logger.info(`Found articles using selector: ${selector}`);
-          break;
-        }
+async fetchBlogPosts() {
+  try {
+    const response = await axios.get(process.env.SENTIENT_LABS_BLOG_URL, {
+      timeout: 15000,
+      headers: {
+        'User-Agent': 'DobbyAI-ContentFetcher/1.0',
+        'Accept': 'text/html,application/xhtml+xml',
+        'Accept-Language': 'en-US,en;q=0.5',
       }
+    });
 
-      if ($articles.length === 0) {
-        logger.warn('No articles found with configured selectors. Blog structure may have changed.');
-        return [];
+    const $ = cheerio.load(response.data);
+    const posts = [];
+    
+    // Get links to individual posts
+    const postLinks = [];
+    $('a[href*="/posts/"]').each((i, el) => {
+      const href = $(el).attr('href');
+      const title = $(el).find('h2').text().trim();
+      if (href && title && !postLinks.some(p => p.url === href)) {
+        postLinks.push({
+          url: href.startsWith('http') ? href : `https://blog.sentient.xyz${href}`,
+          title: title
+        });
       }
+    });
 
-      // Extract data from each article
-      $articles.each((i, element) => {
-        if (i >= 10) return; // Limit to 10 posts
+    logger.info(`Found ${postLinks.length} post links, fetching content...`);
 
-        const $el = $(element);
+    // Fetch first 5 individual posts
+    for (let i = 0; i < Math.min(postLinks.length, 5); i++) {
+      try {
+        const post = postLinks[i];
+        const content = await this.fetchArticleContent(post.url);
         
-        // Extract title
-        let title = '';
-        for (const selector of this.blogSelectors.title) {
-          title = $el.find(selector).first().text().trim();
-          if (title) break;
-        }
-
-        // Extract link
-        let link = '';
-        for (const selector of this.blogSelectors.link) {
-          const href = $el.find(selector).first().attr('href');
-          if (href) {
-            link = href;
-            break;
-          }
-        }
-
-        // Extract content/excerpt
-        let content = '';
-        for (const selector of this.blogSelectors.content) {
-          content = $el.find(selector).text().trim();
-          if (content && content.length > 50) break;
-        }
-
-        // Make sure link is absolute
-        if (link && !link.startsWith('http')) {
-          const baseUrl = new URL(process.env.SENTIENT_LABS_BLOG_URL);
-          link = `${baseUrl.origin}${link.startsWith('/') ? '' : '/'}${link}`;
-        }
-
-        if (title && link) {
+        if (content && content.length > 100) {
           posts.push({
-            sourceUrl: link,
-            title: title,
-            content: this.cleanText(content.substring(0, 2000)),
+            sourceUrl: post.url,
+            title: post.title,
+            content: content.substring(0, 2000),
             summary: content.substring(0, 300),
             metadata: {
               scrapedAt: new Date().toISOString(),
               source: 'blog'
             }
           });
+          logger.info(`✓ Fetched: ${post.title.substring(0, 40)}...`);
         }
-      });
-
-      if (posts.length === 0) {
-        logger.warn('Found article containers but could not extract data. Consider customizing selectors.');
+        
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 1s delay
+      } catch (error) {
+        logger.error(`Failed to fetch ${postLinks[i].url}:`, error.message);
       }
-
-      return posts;
-    } catch (error) {
-      if (error.code === 'ENOTFOUND') {
-        logger.error('Blog URL not found. Check SENTIENT_LABS_BLOG_URL');
-      } else if (error.response?.status === 403) {
-        logger.error('Blog blocked the request (403). May need different headers or approach');
-      } else if (error.response?.status === 404) {
-        logger.error('Blog URL returned 404. Check SENTIENT_LABS_BLOG_URL');
-      } else {
-        logger.error('Error fetching blog posts:', error.message);
-      }
-      return [];
     }
+
+    return posts;
+  } catch (error) {
+    logger.error('Error fetching blog posts:', error.message);
+    return [];
   }
+}
 
   async fetchArticleContent(url) {
     try {
@@ -243,11 +194,8 @@ class ContentFetcher {
       });
 
       const $ = cheerio.load(response.data);
-      
-      // Remove unwanted elements
       $('script, style, nav, header, footer, aside, .ads, .advertisement').remove();
       
-      // Try to find main content
       const contentSelectors = [
         'article',
         'main',
@@ -267,7 +215,6 @@ class ContentFetcher {
         }
       }
 
-      // Fallback to body if no content found
       if (!content) {
         content = $('body').text().trim();
       }
@@ -279,7 +226,6 @@ class ContentFetcher {
     }
   }
 
-  // Custom selector configuration (call this if default selectors don't work)
   configureSelectors(customSelectors) {
     this.blogSelectors = {
       ...this.blogSelectors,
@@ -288,7 +234,6 @@ class ContentFetcher {
     logger.info('Updated blog selectors with custom configuration');
   }
 
-  // Test blog scraping with current selectors
   async testBlogScraping(url) {
     try {
       const response = await axios.get(url, {
@@ -299,10 +244,8 @@ class ContentFetcher {
       });
 
       const $ = cheerio.load(response.data);
-      
       logger.info('Testing blog selectors...');
       
-      // Test each selector type
       for (const selector of this.blogSelectors.containers) {
         const count = $(selector).length;
         if (count > 0) {
@@ -356,7 +299,6 @@ class ContentFetcher {
   }
 
   async summarizeContent(content, maxLength = 300) {
-    // Simple extractive summarization (first few sentences)
     const sentences = content.match(/[^.!?]+[.!?]+/g) || [];
     let summary = '';
     
@@ -369,7 +311,6 @@ class ContentFetcher {
   }
 
   extractKeyTopics(content) {
-    // Simple keyword extraction
     const commonWords = new Set([
       'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
       'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'be',

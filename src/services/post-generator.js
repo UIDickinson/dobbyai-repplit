@@ -28,8 +28,12 @@ class PostGenerator {
         maxTokens: 800
       });
 
+      console.log('🪶 Raw AI response:', response.content);
+
       const parsed = this.parsePostResponse(response.content);
       
+      console.log('🧩 Parsed Post:', parsed);
+
       return {
         title: parsed.title,
         content: parsed.body,

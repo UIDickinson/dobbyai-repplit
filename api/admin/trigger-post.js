@@ -41,6 +41,9 @@ export default async function handler(req, res) {
       generatedPost.metadata.manuallyTriggered = true;
     }
 
+    console.log('🧾 Generated Post Preview:', JSON.stringify(generatedPost, null, 2));
+
+
     // Validate post
     const validation = postGenerator.validatePost(generatedPost);
     if (!validation.valid) {
@@ -51,6 +54,8 @@ export default async function handler(req, res) {
         details: validation.errors
       });
     }
+
+    console.log('✅ Validation Result:', validation);
 
     // Format for Reddit
     const formattedContent = postGenerator.formatPostForReddit(generatedPost);
