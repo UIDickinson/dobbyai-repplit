@@ -4,16 +4,18 @@
   "type": "module",
   "description": "Sentient Dobby AI Companion on Reddit",
   "main": "index.js",
-  "scripts": {
-    "dev": "vercel dev",
-    "start": "node local-server.js",
-    "dev:local": "nodemon --watch api --watch src --exec node local-server.js",
-    "setup": "node scripts/setup-db.js",
-    "test": "node scripts/test-connection.js",
-    "test:blog": "node scripts/test-sentient-blog.js",
-    "test:ai": "node scripts/test-ai-providers.js",
-    "test:all": "node scripts/test-all-functions.js"
-  },
+"scripts": {
+  "dev": "vercel dev",
+  "start": "node local-server.js",
+  "start:local": "node local-server.js",
+  "dev:local": "nodemon --watch api --watch src --exec node local-server.js",
+  "setup": "node scripts/setup-db.js",
+  "init": "node scripts/init-content.js",
+  "test": "node scripts/test-connection.js",
+  "test:blog": "node scripts/test-sentient-blog.js",
+  "test:ai": "node scripts/test-ai-providers.js",
+  "test:all": "node scripts/test-all-functions.js"
+},
   "keywords": ["ai", "reddit", "bot", "agent"],
   "author": "ui_anon",
   "license": "MIT",
