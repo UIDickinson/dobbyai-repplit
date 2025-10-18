@@ -58,14 +58,26 @@ app.all('/api/*', async (req, res) => {
   }
 });
 
-// run the existing API cron route every 5 minutes locally
+// Cron jobs
 cron.schedule('*/5 * * * *', async () => {
-  try {
-    console.log('[cron] running local cron/auto-post');
-    await fetch(`http://localhost:${PORT}/api/cron/auto-post`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ADMIN_API_KEY } });
-  } catch (err) {
-    console.error('[cron] error', err);
-  }
+  console.log('[cron] Check DMs');
+  await fetch(`http://localhost:${PORT}/api/cron/check-dms`, {
+    headers: { 'Authorization': `Bearer ${process.env.CRON_SECRET}` }
+  }).catch(err => console.error('[cron] check-dms error:', err.message));
+});
+
+cron.schedule('0 */6 * * *', async () => {
+  console.log('[cron] Auto Post');
+  await fetch(`http://localhost:${PORT}/api/cron/auto-post`, {
+    headers: { 'Authorization': `Bearer ${process.env.CRON_SECRET}` }
+  }).catch(err => console.error('[cron] auto-post error:', err.message));
+});
+
+cron.schedule('0 */12 * * *', async () => {
+  console.log('[cron] Fetch Content');
+  await fetch(`http://localhost:${PORT}/api/cron/fetch-content`, {
+    headers: { 'Authorization': `Bearer ${process.env.CRON_SECRET}` }
+  }).catch(err => console.error('[cron] fetch-content error:', err.message));
 });
 
 app.listen(PORT, () => {
