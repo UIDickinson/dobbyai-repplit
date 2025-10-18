@@ -43,18 +43,8 @@ npm install
 cp .env.example .env
 # Edit .env with your credentials
 ```
+4. **Use npm run to view deployment and test calls before you proceed**
 
-4. **Initialize database**
-```bash
-npm run setup
-```
-
-5. **Test connections**
-```bash
-npm run test
-```
-
-6. **Deploy to Vercel**
 
 ## Configuration
 
@@ -70,38 +60,14 @@ npm run test
 
 Cron jobs are automatically configured in `vercel.json`:
 
-- **Check DMs**: Every 5 minutes (`*/5 * * * *`)
-- **Auto Post**: Every 6 hours (`0 */6 * * *`)
-- **Fetch Content**: Every 12 hours (`0 */12 * * *`)
+- Check DMs: Every 5 minutes (`*/5 * * * *`)
+- Auto Post: Every 6 hours (`0 */6 * * *`)
+- Fetch Content: Every 12 hours (`0 */12 * * *`)
 
 To secure cron endpoints, set a `CRON_SECRET` in your environment variables.
 
-## 🔧 Usage
+## Usage
 
-#### Chat API
-```bash
-POST /api/chat
-Content-Type: application/json
-
-{
-  "message": "What is Sentient Labs?",
-  "userId": "username",
-  "includeHistory": true
-}
-```
-
-#### Manual Post Trigger (Admin)
-```bash
-POST /api/admin/trigger-post
-X-API-Key: your_admin_key
-Content-Type: application/json
-
-{
-  "content": "Content to post about...",
-  "postType": "insight",
-  "subreddit": null
-}
-```
 
 #### Get Stats (Admin)
 ```bash
@@ -118,23 +84,21 @@ npm run dev
 # The server will be available at http://localhost:3000
 ```
 
-## 🚧 Roadmap
-
 ### Current Status ✅
-- ✅ Reddit DM monitoring and responses
+- Reddit DM monitoring and responses (Not fully functional)
 - ✅ Multi-AI provider support with rotation
 - ✅ Autonomous post generation
 - ✅ Content fetching from Sentient Labs
 - ✅ Analytics and stats dashboard
 - ✅ Admin API for manual controls
 
-### Upgrade yours 🔜
-- 🔜 On-chain interactions (blockchain module)
-- 🔜 Subreddit monitoring and participation
-- 🔜 Comment thread responses
-- 🔜 Enhanced content summarization
-- 🔜 User preference learning
-- 🔜 Webhook support for real-time notifications
+### Upgrade yours
+- On-chain interactions (blockchain module)
+- Subreddit monitoring and participation
+- Comment thread responses
+- Enhanced content summarization
+- User preference learning
+- Webhook support for real-time notifications
 
 ## 🐛 Troubleshooting
 
@@ -171,9 +135,7 @@ logger.info('Message', { additional: 'data' });
 
 Set `LOG_LEVEL` in environment variables.
 
-## 🤝 Contributing
-
-Contributions are welcome! Please:
+Contributions are welcome!
 
 1. Fork the repository
 2. Create a feature branch
