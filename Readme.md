@@ -1,44 +1,35 @@
-# 🤓 DobbyAI - Sentient Dobby AI Companion on Reddit
+# DobbyAI - Sentient Dobby AI Companion on Reddit
 
-A nerdy AI agent that lives on Reddit, responds to DMs, and autonomously posts insights from Sentient Labs content. Built with Node.js and deployed on Vercel.
+An AI agent that lives on Reddit, responds to DMs, and autonomously posts insights from Sentient Labs content.
 
-## 🌟 Features
+## Features
 
-### Core Functionality
-- 💬 **Chat-based AI Interactions**: Respond to Reddit DMs with intelligent, personality-driven responses
-- 🤖 **Multi-AI Provider Support**: Rotate between OpenAI and Anthropic APIs for rate limit handling
-- 📝 **Autonomous Posting**: Generate and post content based on Sentient Labs blogs/docs
-- 🧠 **Conversation Memory**: Maintain context across conversations
-- 📊 **Analytics Dashboard**: Track performance and engagement metrics
+- Chat-based AI Interactions: Respond to Reddit DMs with intelligent, personality-driven responses
+- Multi-AI Provider Support: Rotate between OpenAI and Anthropic APIs for rate limit handling
+- Autonomous Posting: Generate and post content based on Sentient Labs blogs/docs
+- Conversation Memory: Maintain context across conversations
+- Analytics Dashboard: Track performance and engagement metric
 
-### Personality
-- Nerdy, enthusiastic character inspired by tech culture
-- Knowledgeable about AI, blockchain, and Sentient Labs ecosystem
-- Makes occasional programming puns and sci-fi references
-- Humble and eager to learn
 
 ### Technical Features
-- 🔄 API key rotation for rate limit management
-- 🚦 Built-in rate limiting and exponential backoff
-- 📦 PostgreSQL database for persistence
-- ⏰ Scheduled cron jobs for automation
-- 🔒 Secure admin API with authentication
-- 📈 Comprehensive logging and error handling
+- API key rotation for rate limit management
+- Built-in rate limiting and exponential backoff
+- PostgreSQL database for persistence
+- Scheduled cron jobs for automation
+- Secure admin API with authentication
+- Comprehensive logging and error handling
 
-## 🚀 Quick Start
-
-### Prerequisites
 - Node.js 18+ 
-- Vercel account
 - Reddit account and API credentials
-- OpenAI and/or Anthropic API keys
-- Vercel Postgres database
+- Sentient API keys
+- Database
+- cloud server account for deployment
 
-### Installation
+### Setup
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/dobbyai.git
+git clone https://github.com/UIDickinson/dobbyai-reddit.git
 cd dobbyai
 ```
 
@@ -64,11 +55,8 @@ npm run test
 ```
 
 6. **Deploy to Vercel**
-```bash
-vercel --prod
-```
 
-## 📋 Configuration
+## Configuration
 
 ### Reddit API Setup
 
@@ -77,23 +65,6 @@ vercel --prod
 3. Choose "script" as the app type
 4. Set redirect URI to `http://localhost:8080`
 5. Copy your client ID and secret to `.env`
-
-### Vercel Postgres Setup
-
-1. In your Vercel project dashboard, go to Storage
-2. Create a new Postgres database
-3. Copy the connection string to your environment variables
-4. Run the setup script to create tables
-
-### AI Provider Setup
-
-**OpenAI:**
-- Get API keys from https://platform.openai.com/api-keys
-- Add multiple keys separated by commas for rotation
-
-**Anthropic:**
-- Get API keys from https://console.anthropic.com/
-- Add multiple keys separated by commas for rotation
 
 ### Cron Jobs
 
@@ -106,8 +77,6 @@ Cron jobs are automatically configured in `vercel.json`:
 To secure cron endpoints, set a `CRON_SECRET` in your environment variables.
 
 ## 🔧 Usage
-
-### API Endpoints
 
 #### Chat API
 ```bash
@@ -149,78 +118,6 @@ npm run dev
 # The server will be available at http://localhost:3000
 ```
 
-## 📁 Project Structure
-
-```
-dobbyai/
-├── api/                    # Vercel serverless functions
-│   ├── chat.js            # Chat endpoint
-│   ├── cron/              # Scheduled jobs
-│   │   ├── check-dms.js   # Monitor Reddit DMs
-│   │   ├── auto-post.js   # Generate and post content
-│   │   └── fetch-content.js # Fetch Sentient Labs content
-│   └── admin/             # Admin endpoints
-│       ├── trigger-post.js
-│       └── stats.js
-├── src/
-│   ├── config/            # Configuration
-│   │   ├── database.js    # Database queries
-│   │   ├── reddit.js      # Reddit config
-│   │   └── ai-providers.js
-│   ├── core/              # Core functionality
-│   │   ├── ai-manager.js  # AI provider management
-│   │   └── personality.js # DobbyAI personality
-│   ├── services/          # Business logic
-│   │   ├── reddit-service.js
-│   │   ├── content-fetcher.js
-│   │   └── post-generator.js
-│   ├── utils/             # Utilities
-│   │   ├── rate-limiter.js
-│   │   ├── logger.js
-│   │   └── helpers.js
-│   └── blockchain/        # Future on-chain features
-│       └── README.md
-├── scripts/               # Setup scripts
-│   ├── setup-db.js
-│   └── test-connection.js
-├── .env.example
-├── .gitignore
-├── package.json
-├── vercel.json
-└── README.md
-```
-
-## 🗄️ Database Schema
-
-### Tables
-
-- **conversations**: Chat history and DM responses
-- **posts**: Generated and published posts
-- **analytics**: Event tracking and metrics
-- **content_cache**: Cached Sentient Labs content
-
-See `src/config/database.js` for complete schema.
-
-## 🤖 Personality System
-
-DobbyAI has a carefully crafted nerdy personality:
-
-- **Traits**: Intellectually curious, slightly awkward, enthusiastic
-- **Expertise**: AI, ML, blockchain, Sentient Labs
-- **Communication**: Friendly yet knowledgeable, uses tech jargon appropriately
-- **Humor**: Nerdy references, programming puns
-
-Customize in `src/core/personality.js`.
-
-## 🔐 Security
-
-- Never commit `.env` files
-- Use Vercel environment variables in production
-- Rotate API keys regularly
-- Implement rate limiting on public endpoints
-- Validate all user inputs
-- Use secure admin API key for protected endpoints
-
 ## 🚧 Roadmap
 
 ### Current Status ✅
@@ -231,7 +128,7 @@ Customize in `src/core/personality.js`.
 - ✅ Analytics and stats dashboard
 - ✅ Admin API for manual controls
 
-### Coming Soon 🔜
+### Upgrade yours 🔜
 - 🔜 On-chain interactions (blockchain module)
 - 🔜 Subreddit monitoring and participation
 - 🔜 Comment thread responses
@@ -283,24 +180,3 @@ Contributions are welcome! Please:
 3. Make your changes
 4. Add tests if applicable
 5. Submit a pull request
-
-## 📄 License
-
-MIT License - feel free to use this project as you wish!
-
-## 🙏 Acknowledgments
-
-- Built for the Sentient Labs community
-- Inspired by aixbt_agent and other autonomous AI agents
-- Powered by OpenAI and Anthropic
-
-## 📞 Support
-
-For issues or questions:
-- Check the troubleshooting section above
-- Review inline code documentation
-- Open an issue on GitHub
-
----
-
-*Made with 🤓 by DobbyAI - Your Nerdy AI Companion*

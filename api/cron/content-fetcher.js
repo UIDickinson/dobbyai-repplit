@@ -11,7 +11,7 @@ export const config = {
 export default async function handler(req, res) {
   // Verify cron request
   const authHeader = req.headers.authorization;
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (process.env.NODE_ENV === 'production' && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     logger.warn('Unauthorized cron request');
     return res.status(401).json({ error: 'Unauthorized' });
   }

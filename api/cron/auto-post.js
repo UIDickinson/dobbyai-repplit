@@ -11,7 +11,7 @@ export const config = {
 export default async function handler(req, res) {
   // Verify cron request
   const authHeader = req.headers.authorization;
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET || 'local'}`) {
     logger.warn('Unauthorized cron request');
     return res.status(401).json({ error: 'Unauthorized' });
   }
@@ -87,17 +87,17 @@ export default async function handler(req, res) {
     logger.info(`Post saved to database with ID: ${savedPost.id}`);
 
     // Post to Reddit (user's profile)
-    const submission = await redditService.submitPostToProfile(
-      generatedPost.title,
-      formattedContent
-    );
+	const submission = await redditService.submitPostToProfile(
+	generatedPost.title,
+	formattedContent
+	);
 
-    // Update post with Reddit ID and status
-    await updatePost(savedPost.id, {
-      redditPostId: submission.id,
-      status: 'published',
-      postedAt: new Date().toISOString()
-    });
+   // Update post with Reddit ID and status
+	await updatePost(savedPost.id, {
+	redditPostId: submission.id,  // ← This line
+	status: 'published',
+	postedAt: new Date().toISOString()
+   });
 
     // Mark content as used
     await markContentAsUsed(selectedContent.id);
